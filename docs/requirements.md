@@ -121,4 +121,31 @@
 
 ## Process Model and Justification
 
+**Chosen Model:** Incremental Model.
+
+**Justification:**
+- The six functional modules (`member`, `meal`, `expense`, `billing`, `payment`, `notification`) are fairly independent, so each module can be designed, built with TDD, tested in CI, and merged as one self-contained increment (one pull request per increment).
+- Working, tested software exists after the very first increments rather than waiting until the end of the project.
+- The requirements for a hostel mess manager are small and stable up front.
+- Because there is only one developer, Scrum ceremonies (daily stand-ups, sprint planning, retrospectives) would add overhead without benefit.
+
+**Alternatives Rejected:**
+- **Waterfall:** Produces no working software until the end of the schedule, making any late design or integration mistake expensive to fix.
+- **Scrum:** Designed for multi-person teams with a Product Owner, Scrum Master, and time-boxed sprints; unnecessary ceremony for a single developer lab project.
+
+### Planned Increments and Branches
+
+| Increment | Planned Branch | Deliverable |
+| --- | --- | --- |
+| Foundation | `feature/database-setup` | SQLite connection helper, table schema, app factory database wiring |
+| Increment 1: Member | `feature/member-module` | `Member` model, `MemberRepository`, `MemberService` with validation |
+| Increment 2: Meal | `feature/meal-tracking` | Date/month validators, `MealEntry` model, `MealRepository`, `MealService` |
+| Increment 3: Expense | `feature/expense-module` | `Expense` model, `ExpenseRepository`, `ExpenseService` |
+| Increment 4: Billing | `feature/billing-strategy` | `BillingStrategy` (`PerMealRateStrategy`, `EqualSplitStrategy`), `BillLine`, `BillingService` |
+| Increment 5: Payment | `feature/payment-adapter` | `PaymentGateway`, `WalletGatewayAdapter`, `SandboxWalletClient`, `PaymentRepository`, `PaymentService` |
+| Increment 6: Notification | `feature/notification-module` | `Notifier`, `SmsNotifier`, `ConsoleNotifier`, `NotifierFactory`, `NotificationService` |
+| Increment 7: Web UI | `feature/web-ui` | Flask routes and Jinja2 templates connecting all services |
+| Increment 8: E2E Tests | `test/selenium-e2e` | Headless Selenium browser tests covering end-to-end user flows |
+| Increment 9: Mutation Testing | `test/mutation-testing` | `mutmut` configuration, mutation score analysis, and surviving-mutant tests |
+
 ## Prototype
