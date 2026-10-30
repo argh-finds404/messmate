@@ -149,3 +149,9 @@
 | Increment 9: Mutation Testing | `test/mutation-testing` | `mutmut` configuration, mutation score analysis, and surviving-mutant tests |
 
 ## Prototype
+
+Static, low-fidelity HTML mock-ups live under `docs/prototype/` (with `docs/prototype/index.html` linking to all screens):
+
+- `docs/prototype/members.html`: Shows the member registration form (name, room, phone) and the registered members table with status and a Deactivate button.
+- `docs/prototype/meals.html`: Shows the daily meal entry form (`0` to `3` meals per active member), monthly meal totals, the bazar expense entry form, and the monthly expense table.
+- `docs/prototype/billing.html`: Shows the monthly bill generator with strategy selector (per-meal rate or equal split), the per-member bill/paid/due table, a button to send bill notices, and the mobile-wallet payment form.
