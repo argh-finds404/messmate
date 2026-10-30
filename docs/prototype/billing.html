@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>messmate Prototype - Billing &amp; Payments</title>
+  <style>
+    body { font-family: sans-serif; max-width: 720px; margin: 20px auto; color: #222; }
+    .note { background: #eee; border: 1px solid #999; padding: 8px; margin-bottom: 16px; }
+    .box { background: #f4f4f4; border: 1px solid #bbb; padding: 12px; margin-bottom: 12px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 6px; text-align: left; }
+    nav a { margin-right: 12px; }
+  </style>
+</head>
+<body>
+  <div class="note">Low-fidelity static mock-up only, not the real UI.</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="members.html">Members</a>
+    <a href="meals.html">Meals &amp; Expenses</a>
+    <a href="billing.html">Billing &amp; Payments</a>
+  </nav>
+  <h1>Monthly Billing &amp; Payments</h1>
+  <div class="box">
+    <p>Month: [ 2026-10 ] Strategy: [ Per-Meal Rate (v) ] <button>Generate Bill</button> <button>Send Bill Notices</button></p>
+    <table>
+      <tr><th>Member</th><th>Meals</th><th>Charge</th><th>Paid</th><th>Due</th></tr>
+      <tr><td>Rafi</td><td>10</td><td>1000.00</td><td>400.00</td><td>600.00</td></tr>
+      <tr><td>Sami</td><td>20</td><td>2000.00</td><td>2000.00</td><td>0.00</td></tr>
+    </table>
+  </div>
+  <div class="box">
+    <h2>Record Mobile-Wallet Payment</h2>
+    <p>Member: [ Rafi (v) ] Month: [ 2026-10 ] Amount: [ 600.00 ] <button>Pay Now</button></p>
+  </div>
+</body>
+</html>
