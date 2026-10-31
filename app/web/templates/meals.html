@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Meals</h1>
+<form id="month-filter" method="get" action="{{ url_for('web.meals_page') }}">
+  <label for="filter_month">Month</label>
+  <input id="filter_month" name="month" value="{{ month }}">
+  <button id="apply-month" type="submit">Show</button>
+</form>
+<form id="meal-form" method="post" action="{{ url_for('web.add_meals') }}">
+  <label for="member_id">Member</label>
+  <select id="member_id" name="member_id">
+    {% for member in members %}<option value="{{ member.id }}">{{ member.name }}</option>{% endfor %}
+  </select>
+  <label for="meal_date">Date</label> <input id="meal_date" name="meal_date" value="{{ today }}">
+  <label for="meal_count">Meals (0-3)</label> <input id="meal_count" name="meal_count" type="number" value="3">
+  <button id="save-meals" type="submit">Save meals</button>
+</form>
+<table id="meal-totals">
+  <thead><tr><th>Member</th><th>Meals in {{ month }}</th></tr></thead>
+  <tbody>
+  {% for member, total in rows %}
+    <tr><td class="member-name">{{ member.name }}</td><td class="meal-total">{{ total }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
