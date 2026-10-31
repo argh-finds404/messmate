@@ -1,3 +1,4 @@
+import math
 from datetime import date
 
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
@@ -33,6 +34,15 @@ def to_int(text):
         return int(text)
     except (TypeError, ValueError):
         return None
+
+
+def to_float(text):
+    """Form text to float, or None if it is not a finite number."""
+    try:
+        value = float(text)
+    except (TypeError, ValueError):
+        return None
+    return value if math.isfinite(value) else None
 
 
 def attempt(action):
@@ -109,3 +119,33 @@ def add_meals():
     if attempt(record):
         return redirect(url_for("web.meals_page", month=meal_date[:7]))
     return redirect(url_for("web.meals_page"))
+
+
+# ---- expenses ----
+
+@bp.get("/expenses")
+def expenses_page():
+    month = month_from_url()
+    return render_template(
+        "expenses.html",
+        month=month,
+        expenses=services().expenses.list_for_month(month),
+        total=services().expenses.total_for_month(month),
+        today=date.today().isoformat(),
+    )
+
+
+@bp.post("/expenses")
+def add_expense():
+    form = request.form
+    expense_date = form.get("expense_date", "")
+
+    def add():
+        services().expenses.add_expense(
+            expense_date, form.get("description", ""), to_float(form.get("amount"))
+        )
+        return "Expense added"
+
+    if attempt(add):
+        return redirect(url_for("web.expenses_page", month=expense_date[:7]))
+    return redirect(url_for("web.expenses_page"))
