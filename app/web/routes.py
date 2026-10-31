@@ -56,6 +56,16 @@ def attempt(action):
     return True
 
 
+def build_bill(month, strategy_key):
+    """Return (strategy_key, bill lines); an unknown key falls back to per_meal."""
+    registry = services().strategies
+    if strategy_key not in registry:
+        flash("Unknown billing strategy", "error")
+        strategy_key = "per_meal"
+    lines = services().billing.generate_bill(month, registry[strategy_key]())
+    return strategy_key, lines
+
+
 @bp.get("/")
 def home():
     return redirect(url_for("web.members_page"))
@@ -149,6 +159,40 @@ def add_expense():
     if attempt(add):
         return redirect(url_for("web.expenses_page", month=expense_date[:7]))
     return redirect(url_for("web.expenses_page"))
+
+
+# ---- billing ----
+
+@bp.get("/billing")
+def billing_page():
+    month = month_from_url()
+    strategy_key, lines = build_bill(month, request.args.get("strategy", "per_meal"))
+    rows = [
+        {
+            "line": line,
+            "paid": services().payments.total_paid(line.member_id, month),
+            "due": services().payments.due_for(line.member_id, month, line.charge),
+        }
+        for line in lines
+    ]
+    total = round(sum(line.charge for line in lines), 2)
+    return render_template(
+        "billing.html", month=month, strategy=strategy_key, rows=rows, total=total
+    )
+
+
+@bp.post("/billing/notify")
+def notify_bill():
+    month = request.form.get("month", "")
+    strategy_key = request.form.get("strategy", "per_meal")
+
+    def notify():
+        _, lines = build_bill(check_month(month), strategy_key)
+        sent = services().notifications.send_bill_notices(month, lines)
+        return f"Sent {sent} bill notices"
+
+    attempt(notify)
+    return redirect(url_for("web.billing_page", month=month, strategy=strategy_key))
 
 
 # ---- payments ----
