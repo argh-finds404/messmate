@@ -37,3 +37,9 @@ def test_empty_description_shows_error(client):
 def test_bad_date_shows_error(client):
     html = add_expense(client, "2026-13-02", "Rice", "100").get_data(as_text=True)
     assert "Date must be" in html
+
+
+def test_bad_month_in_url_shows_error_and_still_renders(client):
+    response = client.get("/expenses?month=oops")
+    assert response.status_code == 200
+    assert "Month must be in YYYY-MM format" in response.get_data(as_text=True)
