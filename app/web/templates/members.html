@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Members</h1>
+<form id="member-form" method="post" action="{{ url_for('web.add_member') }}">
+  <label for="name">Name</label> <input id="name" name="name">
+  <label for="room">Room</label> <input id="room" name="room">
+  <label for="phone">Phone</label> <input id="phone" name="phone">
+  <button id="add-member" type="submit">Add member</button>
+</form>
+{% if members %}
+<table id="member-table">
+  <thead><tr><th>Name</th><th>Room</th><th>Phone</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+  {% for member in members %}
+    <tr>
+      <td class="member-name">{{ member.name }}</td>
+      <td class="member-room">{{ member.room }}</td>
+      <td class="member-phone">{{ member.phone }}</td>
+      <td class="member-status">{{ "Active" if member.active else "Inactive" }}</td>
+      <td>
+        {% if member.active %}
+        <form class="inline" method="post" action="{{ url_for('web.deactivate_member', member_id=member.id) }}">
+          <button id="deactivate-{{ member.id }}" type="submit">Deactivate</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p id="no-members">No members yet.</p>
+{% endif %}
+{% endblock %}
