@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Payments</h1>
+<form id="month-filter" method="get" action="{{ url_for('web.payments_page') }}">
+  <label for="filter_month">Month</label>
+  <input id="filter_month" name="month" value="{{ month }}">
+  <button id="apply-month" type="submit">Show</button>
+</form>
+<form id="payment-form" method="post" action="{{ url_for('web.add_payment') }}">
+  <label for="member_id">Member</label>
+  <select id="member_id" name="member_id">
+    {% for member in members %}<option value="{{ member.id }}">{{ member.name }}</option>{% endfor %}
+  </select>
+  <label for="month">Month</label> <input id="month" name="month" value="{{ month }}">
+  <label for="amount">Amount</label> <input id="amount" name="amount">
+  <button id="pay" type="submit">Pay</button>
+</form>
+{% if payments %}
+<table id="payment-table">
+  <thead><tr><th>Member</th><th>Amount</th><th>Reference</th></tr></thead>
+  <tbody>
+  {% for payment in payments %}
+    <tr>
+      <td class="member-name">{{ names[payment.member_id] }}</td>
+      <td class="amount">{{ "%.2f"|format(payment.amount) }}</td>
+      <td class="reference">{{ payment.reference }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p id="no-payments">No payments in {{ month }}.</p>
+{% endif %}
+{% endblock %}

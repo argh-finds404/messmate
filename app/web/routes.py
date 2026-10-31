@@ -149,3 +149,35 @@ def add_expense():
     if attempt(add):
         return redirect(url_for("web.expenses_page", month=expense_date[:7]))
     return redirect(url_for("web.expenses_page"))
+
+
+# ---- payments ----
+
+@bp.get("/payments")
+def payments_page():
+    month = month_from_url()
+    members = services().members.list_members()
+    names = {member.id: member.name for member in members}
+    return render_template(
+        "payments.html",
+        month=month,
+        members=members,
+        names=names,
+        payments=services().payments.list_for_month(month),
+    )
+
+
+@bp.post("/payments")
+def add_payment():
+    form = request.form
+    month = form.get("month", "")
+
+    def pay():
+        payment = services().payments.pay(
+            to_int(form.get("member_id")), month, to_float(form.get("amount"))
+        )
+        return f"Payment recorded (ref {payment.reference})"
+
+    if attempt(pay):
+        return redirect(url_for("web.payments_page", month=month))
+    return redirect(url_for("web.payments_page"))
