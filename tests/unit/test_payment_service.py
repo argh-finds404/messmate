@@ -107,3 +107,33 @@ def test_list_for_month_validates_and_delegates(parts):
     payment_repo.list_for_month.assert_called_once_with("2026-10")
     with pytest.raises(ValidationError, match="Month must be"):
         service.list_for_month("2026-13")
+
+
+def test_pay_accepts_positive_amount_below_one(parts):
+    service, _, _, gateway = parts
+    payment = service.pay(1, "2026-10", 0.50)
+    gateway.charge.assert_called_once_with("01711111111", 0.50)
+    assert payment.amount == 0.50
+
+
+def test_pay_exact_invalid_amount_error_message(parts):
+    service, _, _, _ = parts
+    with pytest.raises(ValidationError) as exc_info:
+        service.pay(1, "2026-10", 0)
+    assert str(exc_info.value) == "Amount must be a number greater than 0"
+
+
+def test_pay_exact_unknown_member_error_message(parts):
+    service, _, member_repo, _ = parts
+    member_repo.get.return_value = None
+    with pytest.raises(NotFoundError) as exc_info:
+        service.pay(99, "2026-10", 100.0)
+    assert str(exc_info.value) == "Member not found"
+
+
+def test_pay_exact_failed_charge_fallback_error_message(parts):
+    service, _, _, gateway = parts
+    gateway.charge.return_value = PaymentResult(False, message="")
+    with pytest.raises(PaymentFailedError) as exc_info:
+        service.pay(1, "2026-10", 100.0)
+    assert str(exc_info.value) == "Payment failed"
