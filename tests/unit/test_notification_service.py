@@ -53,3 +53,22 @@ def test_missing_member_is_skipped(parts):
     member_repo.get.side_effect = lambda member_id: None
     assert service.send_bill_notices("2026-10", LINES) == 0
     notifier.send.assert_not_called()
+
+
+def test_positive_charge_below_one_receives_notice(parts):
+    service, _, notifier = parts
+    fractional_line = [BillLine(1, "Rafi", 1, 0.50)]
+    assert service.send_bill_notices("2026-10", fractional_line) == 1
+    notifier.send.assert_called_once_with(
+        "01711111111", "Dear Rafi, your mess bill for 2026-10 is 0.50 BDT."
+    )
+
+
+def test_missing_member_does_not_stop_subsequent_members(parts):
+    service, _, notifier = parts
+    mixed_lines = [BillLine(99, "Ghost", 1, 100.0), BillLine(1, "Rafi", 5, 500.0)]
+    sent = service.send_bill_notices("2026-10", mixed_lines)
+    assert sent == 1
+    notifier.send.assert_called_once_with(
+        "01711111111", "Dear Rafi, your mess bill for 2026-10 is 500.00 BDT."
+    )

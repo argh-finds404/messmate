@@ -1,3 +1,2 @@
 # Runs on Linux/WSL only, so it is kept out of requirements.txt
-mutmut
-
+mutmut==3.8.1

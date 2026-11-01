@@ -29,3 +29,21 @@ def test_check_month_returns_valid_month():
 def test_check_month_rejects_bad_values(value):
     with pytest.raises(ValidationError, match="Month must be"):
         check_month(value)
+
+
+def test_check_date_exact_error_message_regex_failure():
+    with pytest.raises(ValidationError) as exc_info:
+        check_date("bad-format")
+    assert str(exc_info.value) == "Date must be a real date in YYYY-MM-DD format"
+
+
+def test_check_date_exact_error_message_invalid_calendar_date():
+    with pytest.raises(ValidationError) as exc_info:
+        check_date("2026-02-30")
+    assert str(exc_info.value) == "Date must be a real date in YYYY-MM-DD format"
+
+
+def test_check_month_exact_error_message():
+    with pytest.raises(ValidationError) as exc_info:
+        check_month("2026-13")
+    assert str(exc_info.value) == "Month must be in YYYY-MM format"
