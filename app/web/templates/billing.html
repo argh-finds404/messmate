@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Monthly bill</h1>
+<form id="billing-filter" method="get" action="{{ url_for('web.billing_page') }}">
+  <label for="filter_month">Month</label>
+  <input id="filter_month" name="month" value="{{ month }}">
+  <label for="strategy">How to split</label>
+  <select id="strategy" name="strategy">
+    <option value="per_meal" {{ "selected" if strategy == "per_meal" }}>Per-meal rate</option>
+    <option value="equal" {{ "selected" if strategy == "equal" }}>Equal split</option>
+  </select>
+  <button id="show-bill" type="submit">Show bill</button>
+</form>
+<table id="bill-table">
+  <thead><tr><th>Member</th><th>Meals</th><th>Charge</th><th>Paid</th><th>Due</th></tr></thead>
+  <tbody>
+  {% for row in rows %}
+    <tr data-member-id="{{ row.line.member_id }}">
+      <td class="member-name">{{ row.line.name }}</td>
+      <td class="meals">{{ row.line.meals }}</td>
+      <td class="charge">{{ "%.2f"|format(row.line.charge) }}</td>
+      <td class="paid">{{ "%.2f"|format(row.paid) }}</td>
+      <td class="due">{{ "%.2f"|format(row.due) }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p id="bill-total">Total charges: {{ "%.2f"|format(total) }}</p>
+<form id="notify-form" method="post" action="{{ url_for('web.notify_bill') }}">
+  <input type="hidden" name="month" value="{{ month }}">
+  <input type="hidden" name="strategy" value="{{ strategy }}">
+  <button id="send-notices" type="submit">Send bill notices</button>
+</form>
+{% endblock %}
