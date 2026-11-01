@@ -135,18 +135,23 @@
 
 ### Planned Increments and Branches
 
-| Increment | Planned Branch | Deliverable |
+| Increment | Branch Name | Deliverable |
 | --- | --- | --- |
+| Scaffold | `chore/project-scaffold` | Project structure, Flask skeleton, CI workflow, documentation templates |
+| Requirements & Prototype | `docs/requirements-and-prototype` | Requirements specification, user stories, use cases, process model, HTML prototypes |
+| Architecture & Patterns | `docs/uml-and-patterns` | Layered architecture document, design patterns rationale, Mermaid UML class diagram |
 | Foundation | `feature/database-setup` | SQLite connection helper, table schema, app factory database wiring |
 | Increment 1: Member | `feature/member-module` | `Member` model, `MemberRepository`, `MemberService` with validation |
 | Increment 2: Meal | `feature/meal-tracking` | Date/month validators, `MealEntry` model, `MealRepository`, `MealService` |
-| Increment 3: Expense | `feature/expense-module` | `Expense` model, `ExpenseRepository`, `ExpenseService` |
+| Increment 3: Expense | `feature/expense-module` | `Expense` model, `ExpenseRepository`, `ExpenseService` with validation |
 | Increment 4: Billing | `feature/billing-strategy` | `BillingStrategy` (`PerMealRateStrategy`, `EqualSplitStrategy`), `BillLine`, `BillingService` |
 | Increment 5: Payment | `feature/payment-adapter` | `PaymentGateway`, `WalletGatewayAdapter`, `SandboxWalletClient`, `PaymentRepository`, `PaymentService` |
 | Increment 6: Notification | `feature/notification-module` | `Notifier`, `SmsNotifier`, `ConsoleNotifier`, `NotifierFactory`, `NotificationService` |
-| Increment 7: Web UI | `feature/web-ui` | Flask routes and Jinja2 templates connecting all services |
-| Increment 8: E2E Tests | `test/selenium-e2e` | Headless Selenium browser tests covering end-to-end user flows |
-| Increment 9: Mutation Testing | `test/mutation-testing` | `mutmut` configuration, mutation score analysis, and surviving-mutant tests |
+| Increment 7a: Web UI Core | `feature/web-ui-core` | Service container, base layout, and Flask routes/templates for members, meals, and expenses |
+| Increment 7b: Web UI Billing & Payments | `feature/web-ui-billing-payments` | Flask routes and templates for billing strategy selection, bill notice dispatch, and payments |
+| Increment 8: E2E Tests | `test/selenium-e2e` | Headless Selenium browser tests covering end-to-end user flows and CI coverage gate |
+| Increment 9: Mutation Testing | `test/mutation-testing` | `mutmut` configuration, mutation analysis, surviving mutant tests, and manual CI workflow |
+| Final Documentation | `docs/final-docs` | Comprehensive README, test report, synchronized design docs, and viva cheat sheet |
 
 ## Prototype
 
@@ -155,3 +160,5 @@ Static, low-fidelity HTML mock-ups live under `docs/prototype/` (with `docs/prot
 - `docs/prototype/members.html`: Shows the member registration form (name, room, phone) and the registered members table with status and a Deactivate button.
 - `docs/prototype/meals.html`: Shows the daily meal entry form (`0` to `3` meals per active member), monthly meal totals, the bazar expense entry form, and the monthly expense table.
 - `docs/prototype/billing.html`: Shows the monthly bill generator with strategy selector (per-meal rate or equal split), the per-member bill/paid/due table, a button to send bill notices, and the mobile-wallet payment form.
+
+*Note on UI Evolution:* In the initial prototype mock-up, payments and billing were displayed together on `billing.html`. In the final web application (`feature/web-ui-billing-payments`), payments were cleanly separated into their own dedicated `/payments` view and navigation item (`app/web/templates/payments.html`), keeping the billing screen focused strictly on monthly bill calculation, due summary, and notice dispatch.
