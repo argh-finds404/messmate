@@ -3,30 +3,246 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>messmate</title>
+  <title>MessMate — Mess & Hostel Manager</title>
   <style>
-    body { font-family: sans-serif; max-width: 860px; margin: 1rem auto; padding: 0 1rem; }
-    nav a { margin-right: 1rem; }
-    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
-    th, td { border: 1px solid #ccc; padding: 0.4rem; text-align: left; }
-    form.inline { display: inline; }
-    .flash { padding: 0.5rem; margin: 0.5rem 0; border-radius: 4px; }
-    .flash.success { background: #e3f6e3; }
-    .flash.error { background: #fbe3e3; }
-    label { margin-right: 0.5rem; }
+    :root {
+      --primary: #0f766e;
+      --primary-hover: #115e59;
+      --primary-light: #f0fdfa;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --border-focus: #0d9488;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --danger: #e11d48;
+      --danger-hover: #be123c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      margin: 0;
+      padding: 1.5rem 1rem 3rem;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+      padding: 2rem 2.25rem;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.75rem;
+    }
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+    nav a:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 1.25rem 0;
+      letter-spacing: -0.015em;
+    }
+    .flash {
+      padding: 0.75rem 1rem;
+      margin: 1rem 0 1.5rem 0;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+    .flash.success {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    .flash.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    form {
+      margin-bottom: 1.5rem;
+    }
+    form:not(.inline) {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.15rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem 1rem;
+    }
+    form.inline {
+      display: inline;
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      border: none;
+    }
+    label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    input, select {
+      font-family: inherit;
+      font-size: 0.875rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--text);
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    input:focus, select:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+    }
+    button {
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: var(--primary);
+      color: #ffffff;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    button:hover {
+      background: var(--primary-hover);
+    }
+    button[id^="deactivate-"] {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.65rem;
+      font-size: 0.8125rem;
+    }
+    button[id^="deactivate-"]:hover {
+      background: #fff1f2;
+      border-color: #fecdd3;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    thead {
+      background: #f1f5f9;
+    }
+    th {
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      color: var(--text);
+      border-bottom: 1px solid #f1f5f9;
+      text-align: left;
+    }
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    tbody tr:hover td {
+      background: #fbfcfe;
+    }
+    p {
+      color: var(--text-muted);
+      font-size: 0.9375rem;
+    }
+    #month-total, #bill-total {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 1.25rem 0;
+      padding-top: 0.5rem;
+    }
+    #no-members, #no-expenses, #no-payments {
+      padding: 1.5rem;
+      text-align: center;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px dashed var(--border);
+      margin: 1.25rem 0;
+    }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="/members">Members</a>
-    <a href="/meals">Meals</a>
-    <a href="/expenses">Expenses</a>
-    <a href="/billing">Billing</a>
-    <a href="/payments">Payments</a>
-  </nav>
-  {% for category, message in get_flashed_messages(with_categories=true) %}
-    <div class="flash {{ category }}">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
+  <div class="container">
+    <header>
+      <a class="brand" href="/members">🥣 MessMate</a>
+      <nav>
+        <a href="/members">Members</a>
+        <a href="/meals">Meals</a>
+        <a href="/expenses">Expenses</a>
+        <a href="/billing">Billing</a>
+        <a href="/payments">Payments</a>
+      </nav>
+    </header>
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+      <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </div>
 </body>
 </html>
