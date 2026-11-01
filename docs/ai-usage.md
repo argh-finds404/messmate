@@ -14,3 +14,4 @@
 | 2026-10-31 | Antigravity agent | Stage 10: notifiers, notifier factory, notification service, tests, merge conflict resolution note | pending |
 | 2026-10-31 | Antigravity agent | Stage 11: service container, base template, Flask routes and HTML templates for members, meals and expenses, unit tests | pending |
 | 2026-11-01 | Antigravity agent | Stage 12: Flask routes and HTML templates for payments and billing with strategy choice and bill notices, unit tests | pending |
+| 2026-11-01 | Antigravity agent | Stage 13: Selenium e2e tests, browser-tests CI job, coverage failure threshold | pending |
