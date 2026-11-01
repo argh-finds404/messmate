@@ -63,3 +63,4 @@ Repeating `if channel == "sms": ... else: ...` conditionals in every caller that
 
 - **Repository (`app/repositories/`):** One repository class per SQLite table (`MemberRepository`, `MealRepository`, `ExpenseRepository`, `PaymentRepository`) keeps all SQL queries out of the service layer.
 - **Constructor Dependency Injection:** Services accept their repositories, gateways, and notifiers in `__init__`, making unit testing with `unittest.mock.Mock` straightforward.
+- **Service Container (`app/container.py`):** `ServiceContainer.build(conn, config)` wires SQLite connections, repositories, adapters, and services together into a single strongly-typed container stored on `app.extensions["container"]`, providing clean inversion of control to Flask route handlers.

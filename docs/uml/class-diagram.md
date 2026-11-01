@@ -1,6 +1,6 @@
 # UML Class Diagram
 
-Planned class structure and relationships across models, repositories, services, strategies, adapters, and factories:
+Class structure and relationships across models, repositories, services, strategies, adapters, factories, and the dependency container in the final codebase:
 
 ```mermaid
 classDiagram
@@ -127,6 +127,17 @@ classDiagram
         +create(channel, sms_client, out) Notifier
     }
 
+    class ServiceContainer {
+        +MemberService members
+        +MealService meals
+        +ExpenseService expenses
+        +BillingService billing
+        +PaymentService payments
+        +NotificationService notifications
+        +dict strategies
+        +build(conn, config)$ ServiceContainer
+    }
+
     MemberService --> MemberRepository
     MealService --> MealRepository
     MealService --> MemberRepository
@@ -153,6 +164,13 @@ classDiagram
     Notifier <|-- ConsoleNotifier
     SmsNotifier --> SandboxSmsClient : sends through
     NotifierFactory ..> Notifier : creates
+
+    ServiceContainer --> MemberService
+    ServiceContainer --> MealService
+    ServiceContainer --> ExpenseService
+    ServiceContainer --> BillingService
+    ServiceContainer --> PaymentService
+    ServiceContainer --> NotificationService
 
     MemberRepository ..> Member
     MealRepository ..> MealEntry
