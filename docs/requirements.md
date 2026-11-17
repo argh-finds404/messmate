@@ -147,11 +147,13 @@
 | Increment 4: Billing | `feature/billing-strategy` | `BillingStrategy` (`PerMealRateStrategy`, `EqualSplitStrategy`), `BillLine`, `BillingService` |
 | Increment 5: Payment | `feature/payment-adapter` | `PaymentGateway`, `WalletGatewayAdapter`, `SandboxWalletClient`, `PaymentRepository`, `PaymentService` |
 | Increment 6: Notification | `feature/notification-module` | `Notifier`, `SmsNotifier`, `ConsoleNotifier`, `NotifierFactory`, `NotificationService` |
-| Increment 7a: Web UI Core | `feature/web-ui-core` | Service container, base layout, and Flask routes/templates for members, meals, and expenses |
+| Increment 7a: Web UI Core | `feature/web-ui-core` | Service wiring, base layout, and Flask routes/templates for members, meals, and expenses |
 | Increment 7b: Web UI Billing & Payments | `feature/web-ui-billing-payments` | Flask routes and templates for billing strategy selection, bill notice dispatch, and payments |
 | Increment 8: E2E Tests | `test/selenium-e2e` | Headless Selenium browser tests covering end-to-end user flows and CI coverage gate |
 | Increment 9: Mutation Testing | `test/mutation-testing` | `mutmut` configuration, mutation analysis, surviving mutant tests, and manual CI workflow |
 | Final Documentation | `docs/final-docs` | Comprehensive README, test report, synchronized design docs, and viva cheat sheet |
+| Learning Log | `docs/learning-log` | Student's self-directed learning log entry on mutation testing |
+| Fixture & Doc Sync | `fix/fixtures-and-docs-sync` | Close SQLite connections cleanly in test fixtures; align README and docs with real codebase |
 
 ## Prototype
 
