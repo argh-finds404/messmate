@@ -17,3 +17,4 @@
 | 2026-11-01 | Antigravity agent | Stage 13: Selenium e2e tests, browser-tests CI job, coverage failure threshold | pending |
 | 2026-11-01 | Antigravity agent | Stage 14: mutmut configuration, baseline and improved mutation testing, manual CI workflow | pending |
 | 2026-11-01 | Antigravity agent | Stage 15: project README, test report, synchronized design docs, and viva cheatsheet | pending |
+| 2026-11-17 | Antigravity agent | Fix test fixture DB teardown leaks and sync README, design, mutation, test-report, and requirements docs | pending |

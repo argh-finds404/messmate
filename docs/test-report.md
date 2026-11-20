@@ -146,4 +146,4 @@ Continuous Integration is automated using GitHub Actions (`.github/workflows/ci.
 - **Jobs:**
   - `unit-tests`: Executes 205 unit tests and enforces the 97% minimum statement coverage threshold (`--cov-fail-under=97`).
   - `browser-tests`: Installs headless Google Chrome and executes the Selenium end-to-end acceptance tests.
-- **Workflow Health:** All 14 pull requests merged into `main` have passed 100% of their CI checks without failures or broken builds.
+- **Workflow Health:** All pull requests merged into `main` (#1 through #16, followed by #17 for test-fixture cleanup and doc sync) have passed 100% of their CI checks without failures or broken builds.

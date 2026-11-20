@@ -11,7 +11,10 @@ class TestConfig(Config):
 
 @pytest.fixture
 def app():
-    return create_app(TestConfig)
+    """Create a test Flask app backed by an in-memory database and close it afterwards."""
+    flask_app = create_app(TestConfig)
+    yield flask_app
+    flask_app.extensions["db"].close()
 
 
 @pytest.fixture

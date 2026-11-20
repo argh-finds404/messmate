@@ -39,14 +39,13 @@ cd messmate
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 
-# 3. Install dependencies
+# 3. Install dependencies (includes Flask, pytest, pytest-cov, selenium)
 pip install -r requirements.txt
-pip install -r requirements-dev.txt
 
 # 4. Run application
 python run.py
 ```
-Open `http://localhost:5000` in your browser.
+Open `http://127.0.0.1:5000` in your browser.
 
 ### Linux / macOS / WSL (Bash)
 ```bash
@@ -58,14 +57,13 @@ cd messmate
 python3 -m venv venv
 source venv/bin/activate
 
-# 3. Install dependencies
+# 3. Install dependencies (includes Flask, pytest, pytest-cov, selenium)
 pip install -r requirements.txt
-pip install -r requirements-dev.txt
 
 # 4. Run application
 python run.py
 ```
-Open `http://localhost:5000` in your browser.
+Open `http://127.0.0.1:5000` in your browser.
 
 ---
 
@@ -147,7 +145,7 @@ messmate/
 │   │   ├── routes.py              # Web endpoints (members, meals, expenses, billing, payments)
 │   │   └── templates/             # Jinja2 HTML templates
 │   ├── config.py                  # Environment configuration classes
-│   ├── container.py               # Dependency injection service container
+│   ├── container.py               # Dependency injection wiring (build_services, build_gateway)
 │   ├── db.py                      # SQLite connection helper & DDL schema
 │   ├── errors.py                  # Custom domain exceptions
 │   └── validation.py              # Input validation helpers (dates, months)
@@ -156,19 +154,20 @@ messmate/
 │   ├── uml/                       # Mermaid UML class diagrams
 │   ├── ai-usage.md                # AI transparency log
 │   ├── design.md                  # Architecture & design pattern rationale
+│   ├── learning-log.md            # Student's self-directed learning log
+│   ├── merge-conflict-note.md     # Stage 10 merge conflict resolution note
 │   ├── mutation-testing.md        # Mutation test scores and mutant justifications
 │   ├── requirements.md            # User stories, use cases, and process model
 │   └── test-report.md             # Comprehensive test and coverage report
 ├── tests/
-│   ├── conftest.py                # Shared fixtures (in-memory db, test client, container)
+│   ├── conftest.py                # Shared fixtures (in-memory db, test app, test client)
 │   ├── e2e/                       # Selenium end-to-end acceptance tests
 │   │   ├── conftest.py            # Live server and headless Chrome fixtures
 │   │   └── test_browser_flows.py  # User workflow browser tests
 │   └── unit/                      # 205 isolated unit tests
 ├── pytest.ini                     # Pytest configuration and marker settings
-├── requirements.txt               # Production dependencies (Flask)
-├── requirements-dev.txt           # Testing dependencies (pytest, pytest-cov, selenium)
-├── requirements-mutation.txt      # Mutation testing dependencies (mutmut)
+├── requirements.txt               # Pinned runtime & testing dependencies (Flask, pytest, selenium)
+├── requirements-mutation.txt      # Mutation testing dependency (mutmut, Linux/WSL only)
 ├── run.py                         # Application entrypoint
 └── setup.cfg                      # mutmut configuration
 ```
@@ -186,7 +185,7 @@ $$\text{Web (Presentation)} \longrightarrow \text{Services (Domain Logic)} \long
 2. A lower layer never imports from a layer above it (e.g., repositories and models never import from services or web).
 3. The database layer and raw SQL queries are completely hidden inside repository classes.
 4. Business logic is pure and independent of Flask request objects.
-5. All external dependencies (gateways, notifiers, repositories) are constructor-injected via `app/container.py`.
+5. All external dependencies (gateways, notifiers, repositories) are constructor-injected via `build_services()` in `app/container.py`.
 
 ---
 
@@ -212,13 +211,13 @@ MessMate is designed to adhere to the **Open/Closed Principle**: new capabilitie
            # custom math here
            return charges
    ```
-2. Register the strategy in `app/container.py` inside `ServiceContainer.build`:
+2. Register the strategy class in `app/container.py` inside `build_services`:
    ```python
-   strategies = {
-       "per_meal": PerMealRateStrategy(),
-       "equal": EqualSplitStrategy(),
-       "fixed_plus_meal": FixedBasePlusMealStrategy(),  # added here
-   }
+   strategies={
+       "per_meal": PerMealRateStrategy,
+       "equal": EqualSplitStrategy,
+       "fixed_plus_meal": FixedBasePlusMealStrategy,  # added here
+   },
    ```
 
 ### 2. Add a New Notification Channel
@@ -230,9 +229,9 @@ MessMate is designed to adhere to the **Open/Closed Principle**: new capabilitie
        def send(self, phone: str, message: str) -> None:
            self.client.send_email(to=phone, body=message)
    ```
-2. Add a branch in `NotifierFactory.create` in `app/services/notifier_factory.py`:
+2. Add an optional parameter and branch in `NotifierFactory.create` in `app/services/notifier_factory.py`:
    ```python
-   elif channel == "email":
+   if channel == "email":
        return EmailNotifier(email_client)
    ```
 
@@ -246,22 +245,22 @@ MessMate is designed to adhere to the **Open/Closed Principle**: new capabilitie
            res = self.client.execute_payment(phone, amount)
            return PaymentResult(success=res["ok"], reference=res["trx"], message=res["msg"])
    ```
-2. Add a branch in `build_gateway(config)` in `app/container.py` to instantiate the new adapter.
+2. Add a branch in `build_gateway(mode)` in `app/container.py` to instantiate the new adapter when `PAYMENT_MODE == "bkash"`.
 
 ---
 
 ## Git Workflow & Branching
 
 MessMate follows a disciplined incremental Git feature-branch workflow:
-- **Base Branch:** `main` (protected against direct pushes, updated only through pull requests).
+- **Base Branch:** `main` (protected against direct pushes, updated through pull requests).
 - **Branch Naming Conventions:**
   - `feature/<module>` for new functional increments.
   - `test/<suite>` for test infrastructure and mutation testing.
   - `docs/<topic>` for specifications, diagrams, and reports.
   - `chore/<task>` for scaffolding and dependencies.
-  - `ci/<workflow>` for continuous integration setups.
+  - `fix/<topic>` for bug and test-fixture fixes.
 - **Commit Format:** Conventional Commits standard: `type(scope): message`.
-- **Pull Requests:** Every increment was developed on an isolated branch, tested locally, reviewed, approved, and merged using **Create a merge commit** to preserve a clean topological history.
+- **Pull Requests:** Each increment was developed on an isolated branch, tested locally, reviewed, approved, and merged using **Create a merge commit** to preserve a clean topological history.
 
 ---
 
@@ -269,13 +268,13 @@ MessMate follows a disciplined incremental Git feature-branch workflow:
 
 MessMate uses GitHub Actions configured in `.github/workflows/ci.yml` and `.github/workflows/mutation.yml`:
 - **`unit-tests` Job:**
-  - Runs on Ubuntu latest across multiple Python versions.
+  - Runs on `ubuntu-latest` with Python 3.13.
   - Executes the 205 unit tests.
   - Enforces a strict code coverage gate: fails the build if test coverage drops below 97% (`--cov-fail-under=97`). Total coverage is **100%**.
 - **`browser-tests` Job:**
-  - Sets up headless Google Chrome and ChromeDriver.
-  - Executes Selenium end-to-end acceptance tests.
-- **`mutation-testing` Job (`.github/workflows/mutation.yml`):**
+  - Runs headless Google Chrome in CI (`ubuntu-latest`, Python 3.13).
+  - Executes the 5 Selenium end-to-end acceptance tests (`python -m pytest -m e2e -o addopts= -v`).
+- **`mutation-tests` Job (`.github/workflows/mutation.yml`):**
   - Manually triggered via `workflow_dispatch` to prevent slowing down daily PR merges while providing full verification on demand.
 
 ---
@@ -294,4 +293,4 @@ MessMate uses GitHub Actions configured in `.github/workflows/ci.yml` and `.gith
 
 ## AI Usage Statement
 
-The project was drafted with the Antigravity coding agent, every stage is logged in `docs/ai-usage.md`, AI-assisted commits carry an `AI-assisted: Antigravity` line, and the author reviewed and can explain the code.
+The project was drafted with the Antigravity coding agent, every stage is logged in `docs/ai-usage.md`, early scaffold and specification commits carry an `AI-assisted: Antigravity` line, and the author reviewed and can explain the code.

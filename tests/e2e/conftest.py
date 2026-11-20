@@ -26,6 +26,7 @@ def live_server_url():
     yield f"http://127.0.0.1:{server.server_port}"
     server.shutdown()
     thread.join(timeout=5)
+    app.extensions["db"].close()
 
 
 @pytest.fixture

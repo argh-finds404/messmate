@@ -67,11 +67,11 @@ A total of 9 surviving mutants were systematically analyzed and killed across `a
 The remaining 17 surviving mutants were inspected and left intentionally for the following reasons:
 
 - **String literals in error messages (14 mutants):**
-  - `app.services.member_service` (`mutmut_5`, `mutmut_10`, `mutmut_20`, `mutmut_26`, `mutmut_5`): Validation error message strings ("Name is required", "Room is required", etc.).
-  - `app.services.meal_service` (`mutmut_18`, `mutmut_23`): Meal validation error message strings.
-  - `app.services.expense_service` (`mutmut_12`, `mutmut_14`): Expense validation error strings.
-  - `app.services.notifier_factory` (`mutmut_10`, `mutmut_11`): Notifier factory ValueError message strings.
-  - `app.adapters.notifiers` (`mutmut_7`): SMS provider rejection message.
+  - `app.services.member_service.MemberService.register` (`mutmut_5`, `mutmut_10`, `mutmut_20`, `mutmut_26`) and `MemberService.get` (`mutmut_5`): Validation and not-found error message strings.
+  - `app.services.meal_service.MealService.record` (`mutmut_10`, `mutmut_18`, `mutmut_23`): Meal count, not-found, and inactive-member error message strings.
+  - `app.services.expense_service.ExpenseService.add_expense` (`mutmut_5`, `mutmut_12`, `mutmut_14`): Expense description and amount validation error message strings.
+  - `app.services.notifier_factory.NotifierFactory.create` (`mutmut_10`, `mutmut_11`): Notifier factory `ValueError` message strings.
+  - `app.adapters.notifiers.SmsNotifier.send` (`mutmut_7`): SMS provider rejection message string.
   - *Justification:* Domain error classes (`ValidationError`, `NotFoundError`, `NotificationError`) are already verified by exception type and regex matching in the test suite; asserting verbatim copies of every human-readable string creates brittle tests without increasing fault tolerance.
 
 - **Sandbox / Mock SDK Artifacts (3 mutants):**
